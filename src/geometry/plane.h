@@ -1,22 +1,19 @@
-//
-// Created by ik on 22/11/2026.
-//
+#pragma once
 
-#ifndef RAYTRACER_PLANE_H
-#define RAYTRACER_PLANE_H
-#include "shape.h"
+#include <memory>
+
+#include "geometry/shape.h"
+#include "material/material.h"
 #include "math/vector.h"
-
 
 class Plane : public Shape {
 private:
     Vector point_;
     Vector normal_;
+    std::shared_ptr<const Material> material_;
 
 public:
-    Plane (const Vector &point, const Vector &normal);
+    Plane(const Vector& point, const Vector& normal, std::shared_ptr<const Material> material = nullptr);
+
     [[nodiscard]] std::optional<HitInfo> isHitBy(const Ray& ray) const override;
 };
-
-
-#endif //RAYTRACER_PLANE_H

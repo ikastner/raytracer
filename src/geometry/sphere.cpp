@@ -1,13 +1,14 @@
 #include "sphere.h"
 
 #include <cmath>
+#include <utility>
 
 namespace {
 constexpr double kTMin = 1e-4;
 } // namespace
 
-Sphere::Sphere(const Vector& center, double radius)
-    : center_(center), radius_(radius) {}
+Sphere::Sphere(const Vector& center, double radius, std::shared_ptr<const Material> material)
+    : center_(center), radius_(radius), material_(std::move(material)) {}
 
 std::optional<HitInfo> Sphere::isHitBy(const Ray& ray) const {
     const Vector oc = ray.origin() - center_;
@@ -34,5 +35,5 @@ std::optional<HitInfo> Sphere::isHitBy(const Ray& ray) const {
     const Vector point = ray.at(t);
     const Vector normal = (point - center_) * (1.0 / radius_);
 
-    return HitInfo{t, point, normal};
+    return HitInfo{t, point, normal, material_.get()};
 }

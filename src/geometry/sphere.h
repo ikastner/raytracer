@@ -1,22 +1,23 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 
-#include "geometry/hit_info.h"
-#include "geometry/ray.h"
+#include "geometry/shape.h"
+#include "material/material.h"
 #include "math/vector.h"
 
-class Sphere {
+class Sphere : public Shape {
 private:
     Vector center_;
     double radius_ = 0.0;
+    std::shared_ptr<const Material> material_;
 
 public:
-    Sphere(const Vector& center, double radius);
+    Sphere(const Vector& center, double radius, std::shared_ptr<const Material> material = nullptr);
 
     [[nodiscard]] const Vector& center() const { return center_; }
     [[nodiscard]] double radius() const { return radius_; }
 
-    // Returns a HitInfo with t > 1e-4 and a unit-length normal, or std::nullopt if missed.
-    [[nodiscard]] std::optional<HitInfo> isHitBy(const Ray& ray) const;
+    [[nodiscard]] std::optional<HitInfo> isHitBy(const Ray& ray) const override;
 };

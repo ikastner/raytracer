@@ -1,20 +1,20 @@
 #include "image.h"
 
 Image::Image(unsigned int width, unsigned int height)
-    : _width(width), _height(height), _pixels(width * height) {}
+    : width_(width), height_(height), pixels_(width * height) {}
 
 unsigned int Image::getWidth() const {
-    return _width;
+    return width_;
 }
 
 unsigned int Image::getHeight() const {
-    return _height;
+    return height_;
 }
 
 void Image::setPixel(unsigned int x, unsigned int y, const Colour& colour) {
-    _pixels[y * _width + x] = colour;
+    pixels_[y * width_ + x] = colour;
 }
 
 const Colour& Image::pixelAt(unsigned int x, unsigned int y) const {
-    return _pixels[y * _width + x];
+    return pixels_[y * width_ + x];
 }

@@ -41,10 +41,7 @@ add_library(raytracer_core
     src/math/vector.cpp
     src/render/camera.cpp
     src/render/image.cpp
-        src/geometry/shape.cpp
-        src/geometry/shape.h
-        src/geometry/plane.cpp
-        src/geometry/plane.h
+    src/render/scene.cpp
 )
 target_include_directories(raytracer_core PUBLIC src)
 target_link_libraries(raytracer_core PRIVATE raytracer_warnings lodepng)
@@ -76,6 +73,7 @@ add_executable(tests
     tests/math/test_vector.cpp
     tests/render/test_camera.cpp
     tests/render/test_image.cpp
+    tests/render/test_scene.cpp
 )
 target_include_directories(tests PRIVATE tests)
 target_link_libraries(tests PRIVATE raytracer_core raytracer_warnings Catch2::Catch2WithMain)

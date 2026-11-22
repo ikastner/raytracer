@@ -4,7 +4,7 @@ A C++20 raytracer built incrementally using Test-Driven Development (TDD).
 
 [![CI](https://github.com/ikastner/raytracer/actions/workflows/ci.yml/badge.svg)](https://github.com/ikastner/raytracer/actions/workflows/ci.yml)
 
-Licence: [MIT](LICENSE) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Discovery Report (`m0`)](docs/discovery/discovery-report.md) · [ADRs](docs/adr/)
+Licence: [MIT](LICENSE) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Discovery Report (`m0`)](docs/discovery/discovery-report.md) · [Domain Model (`m1`)](docs/domain/domain-model.md) · [ADRs](docs/adr/)
 
 ---
 
@@ -12,17 +12,22 @@ Licence: [MIT](LICENSE) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](
 
 ```text
 .
-├── .devcontainer/          # Dev container config (VS Code / Zed)
+├── .devcontainer/          # Dev container config (VS Code / Zed / CLion)
 ├── .github/                # CI workflow, PR and Issue templates
 ├── docs/
-│   ├── adr/                # Architecture Decision Records
-│   └── discovery/          # Milestone m0 Discovery Report
+│   ├── adr/                # Architecture Decision Records (0001–0007)
+│   ├── discovery/          # Milestone m0 Discovery Report
+│   └── domain/             # Milestone m1 Domain Model (Mermaid)
 ├── src/
-│   ├── main.cpp            # Main entry point (Composition Root)
-│   ├── Vector3.h           # 3D Vector interface
-│   └── Vector3.cpp         # 3D Vector implementation
-├── tests/
-│   └── test_main.cpp       # Catch2 unit tests
+│   ├── colour/             # Colour value object
+│   ├── geometry/           # Shape interface, Sphere, Plane, Ray, HitInfo
+│   ├── io/                 # ImageSaver interface & PngSaver (LodePNG adapter)
+│   ├── light/              # Directional Light (sun)
+│   ├── material/           # Material interface, FlatShader, LambertShader
+│   ├── math/               # Vector value object
+│   ├── render/             # Camera, Image, Scene (tracing & shadows)
+│   └── main.cpp            # Composition Root (renders output/m1_scene.png)
+├── tests/                  # Catch2 unit test suite mirroring src/
 ├── AGENTS.md               # Engineering & TDD rules for AI assistants
 ├── CLAUDE.md               # Entry point pointing to AGENTS.md
 ├── CMakeLists.txt          # Cross-platform CMake build configuration
@@ -36,13 +41,9 @@ Licence: [MIT](LICENSE) · [Contributing](CONTRIBUTING.md) · [Code of Conduct](
 ### Option A — Dev container (recommended)
 
 Requires [Docker](https://www.docker.com/) and either:
-- **VS Code** with the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension, or
-- **Zed** with its built-in dev container support.
-
-1. Open the repository folder in VS Code or Zed.
-2. When prompted, click **"Reopen in Container"** (VS Code) or **"Use Dev Container"** (Zed).
-3. The container image provides GCC, CMake ≥ 3.20, and Git. Catch2 is downloaded automatically at first build.
-4. CMake configures and builds automatically on container creation (`postCreateCommand`).
+- **VS Code** with the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension,
+- **Zed** with its built-in dev container support, or
+- **CLion** via *File → Connect to Remote → Dev Containers*.
 
 ### Option B — Native (macOS / Linux / Windows)
 
@@ -58,22 +59,7 @@ Requires [Docker](https://www.docker.com/) and either:
 
 | Command | What it does |
 |---------|-------------|
-| `make build` | Configure + compile everything |
-| `make run` | Build then launch the raytracer |
-| `make test` | Build then run the Catch2 test suite via CTest |
+| `make build` | Configure + compile everything (`-Wall -Wextra -Wpedantic`) |
+| `make run` | Build and render `output/m1_scene.png` |
+| `make test` | Build and run the Catch2 test suite via CTest |
 | `make clean` | Delete the `build/` directory |
-
-`run` and `test` both depend on `build`, so they recompile automatically if sources have changed.
-
----
-
-## Test-driven development workflow
-
-Tests live in `tests/`. Add a new `TEST_CASE` before writing the implementation, confirm it fails (`make test`), then implement the minimal code until it passes.
-
-| Macro | Purpose |
-|-------|---------|
-| `REQUIRE(expr)` | Assert; stop test on failure |
-| `CHECK(expr)` | Assert; continue on failure |
-| `REQUIRE_THROWS(expr)` | Expect an exception |
-| `Catch::Approx(x).epsilon(e)` | Floating-point comparison |

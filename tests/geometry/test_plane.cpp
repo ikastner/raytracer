@@ -31,3 +31,15 @@ TEST_CASE("Ray pointing away from plane misses", "[plane]") {
 
     REQUIRE_FALSE(floor.isHitBy(ray).has_value());
 }
+
+TEST_CASE("Ray hitting plane from underneath flips normal toward ray", "[plane]") {
+    const Plane floor(Vector(0.0, -1.0, 0.0), Vector(0.0, 1.0, 0.0));
+    const Ray ray(Vector(1.0, -4.0, -3.0), Vector(0.0, 1.0, 0.0));
+
+    const auto hit = floor.isHitBy(ray);
+
+    REQUIRE(hit.has_value());
+    REQUIRE_THAT(hit->t, WithinAbs(3.0, 1e-6));
+    requireVectorsEqual(hit->point, Vector(1.0, -1.0, -3.0));
+    requireVectorsEqual(hit->normal, Vector(0.0, -1.0, 0.0));
+}

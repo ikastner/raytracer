@@ -1,11 +1,5 @@
-//
-// Created by ik on 22/11/2026.
-//
-
-#ifndef RAYTRACER_SHAPE_H
-#define RAYTRACER_SHAPE_H
-
 #pragma once
+
 #include <optional>
 
 #include "geometry/hit_info.h"
@@ -15,8 +9,6 @@ class Shape {
 public:
     virtual ~Shape() = default;
 
-    [[nodiscard]] virtual std::optional<HitInfo> isHitBy(const Ray &ray) const = 0;
+    // Returns a HitInfo with t > 1e-4 and a unit-length normal, or std::nullopt if missed.
+    [[nodiscard]] virtual std::optional<HitInfo> isHitBy(const Ray& ray) const = 0;
 };
-
-
-#endif //RAYTRACER_SHAPE_H
