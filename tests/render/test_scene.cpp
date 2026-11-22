@@ -52,3 +52,18 @@ TEST_CASE("Scene::trace shades lit floor and casts shadow under sphere", "[scene
     const Ray skyRay(Vector(5.0, 0.0, -4.0), Vector(0.0, 1.0, 0.0));
     requireColoursEqual(scene.trace(skyRay), Colour(0.1, 0.2, 0.3));
 }
+
+TEST_CASE("Scene::trace applies ambient light inside cast shadows", "[scene]") {
+    const Light sun(Vector(0.0, 1.0, 0.0), Colour(1.0, 1.0, 1.0));
+    Scene scene(sun, Colour(0.0, 0.0, 0.0), 0.15);
+
+    auto floorMat = std::make_shared<LambertShader>(Colour(0.8, 0.8, 0.8));
+    auto sphereMat = std::make_shared<LambertShader>(Colour(0.9, 0.2, 0.2));
+
+    scene.addShape(std::make_unique<Plane>(Vector(0.0, -1.0, 0.0), Vector(0.0, 1.0, 0.0), floorMat));
+    scene.addShape(std::make_unique<Sphere>(Vector(0.0, 2.0, -4.0), 1.0, sphereMat));
+
+    // Floor in shadow receives ambient light: 0.8 * 0.15 = 0.12
+    const Ray shadowRay(Vector(0.0, 0.0, -4.0), Vector(0.0, -1.0, 0.0));
+    requireColoursEqual(scene.trace(shadowRay), Colour(0.12, 0.12, 0.12));
+}

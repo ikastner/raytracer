@@ -15,9 +15,12 @@ private:
     std::vector<std::unique_ptr<Shape>> shapes_;
     Light light_;
     Colour background_;
+    double ambient_ = 0.0;
 
 public:
-    explicit Scene(const Light& light, const Colour& background = Colour(0.0, 0.0, 0.0));
+    explicit Scene(const Light& light,
+                   const Colour& background = Colour(0.0, 0.0, 0.0),
+                   double ambient = 0.0);
 
     void addShape(std::unique_ptr<Shape> shape);
 

@@ -5,8 +5,8 @@
 
 #include "material/material.h"
 
-Scene::Scene(const Light& light, const Colour& background)
-    : light_(light), background_(background) {}
+Scene::Scene(const Light& light, const Colour& background, double ambient)
+    : light_(light), background_(background), ambient_(ambient) {}
 
 void Scene::addShape(std::unique_ptr<Shape> shape) {
     shapes_.push_back(std::move(shape));
@@ -32,14 +32,17 @@ Colour Scene::trace(const Ray& ray) const {
         return background_;
     }
 
-    const Ray shadowRay(hit->point, light_.direction());
-    if (nearestHit(shadowRay).has_value()) {
-        return Colour(0.0, 0.0, 0.0);
-    }
-
     if (hit->material == nullptr) {
         return Colour(1.0, 1.0, 1.0);
     }
 
-    return hit->material->shade(*hit, light_);
+    const Colour ambientColour =
+        hit->material->shade(*hit, Light(hit->normal, light_.colour())) * ambient_;
+
+    const Ray shadowRay(hit->point, light_.direction());
+    if (nearestHit(shadowRay).has_value()) {
+        return ambientColour;
+    }
+
+    return ambientColour + hit->material->shade(*hit, light_) * (1.0 - ambient_);
 }

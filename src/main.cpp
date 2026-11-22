@@ -23,7 +23,7 @@ int main() {
     std::filesystem::create_directories("output");
 
     const Light sun(Vector(-1.0, 1.5, -1.0), Colour(1.0, 1.0, 0.95));
-    Scene scene(sun, Colour(0.45, 0.65, 0.95));
+    Scene scene(sun, Colour(0.45, 0.65, 0.95), 0.15);
 
     auto sphereMaterial = std::make_shared<LambertShader>(Colour(0.9, 0.25, 0.2));
     auto floorMaterial = std::make_shared<LambertShader>(Colour(0.75, 0.75, 0.75));
